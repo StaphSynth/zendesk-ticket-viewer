@@ -10,8 +10,15 @@ module ZendeskApi
     }
   end
 
+  def self.response_builder(response)
+    {
+      code: response.code,
+      message: JSON.parse(response.body)
+    }
+  end
+
   def self.get_tickets
     response = HTTParty.get(credentials[:url] + 'tickets.json', basic_auth: credentials[:auth])
-    JSON.parse(response.body)
+    response_builder(response)
   end
 end

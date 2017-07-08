@@ -9,9 +9,35 @@ li {
   margin: 1.5em;
 }
 
+.error-message {
+  padding: 1em;
+  background-color: lightblue;
+  border-radius: 10px;
+  margin: 2em;
+}
+
+p {
+  font-size: 1em;
+  font-weight: normal;
+}
+
 </style>
 
-<h1>Hello world!</h1>
+<h1>Zendesk Service Tickets</h1>
+
+<% if @error %>
+  <div class="error-message">
+    <h3>Server Error</h3>
+    <p>Code: <%= @error[:code] %></p>
+    <% @error[:message].each do |title, msg| %>
+      <p>
+        <span><%= title.capitalize %>: </span>
+        <span><%= msg.capitalize %></span>
+      </p>
+    <% end %>
+  </div>
+<% end %>
+
 
 <ul>
   <% @tickets.each do |ticket| %>
