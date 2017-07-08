@@ -1,0 +1,23 @@
+<style>
+ul {
+  list-style: none;
+}
+
+li {
+  padding: 1em;
+  border: solid 1px black;
+  margin: 1.5em;
+}
+
+</style>
+
+<h1>Hello world!</h1>
+
+<ul>
+  <% @tickets.each do |ticket| %>
+    <li>
+      <h3><%= ticket['subject'] %></h3>
+      <p><%= ticket['description'] %></p>
+    </li>
+  <% end %>
+</ul>
