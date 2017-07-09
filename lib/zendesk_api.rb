@@ -71,15 +71,36 @@ module ZendeskApi
     }
   end
 
-  def self.response_builder(response)
-    {
-      code: response.code,
-      message: JSON.parse(response.body)
-    }
+  #gets tickets from the ZD API. By default ZD API returns max 100 tickets,
+  #so call repeatedly to get everything. Accepts an optional query string, but
+  #can be expanded to accept an optional hash containing query string params
+  def self.get_tickets(query = nil)
+    extension = 'tickets.json'
+
+    extension += query if(query && query.is_a?(String))
+
+    response = HTTParty.get(credentials[:url] + extension, basic_auth: credentials[:auth])
+    Response.new(response)
   end
 
-  def self.get_tickets
-    response = HTTParty.get(credentials[:url] + 'tickets.json', basic_auth: credentials[:auth])
-    response_builder(response)
+  #retrieves all tickets from the API by repeatedly calling get_tickets
+  #until there aren't any more to get. Returns a Response object
+  def self.get_all_tickets
+    tickets = get_tickets
+    return tickets if tickets.error?
+
+    url = tickets.data['next_page']
+
+    while(url) do
+      query = '?' + url.split('?')[1]
+      next_batch = get_tickets(query)
+
+      return next_batch if next_batch.error?
+
+      tickets.append_tickets(next_batch)
+      url = next_batch.data['next_page']
+    end
+
+    return tickets
   end
 end
