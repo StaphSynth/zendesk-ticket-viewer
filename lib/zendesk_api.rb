@@ -25,14 +25,6 @@ module ZendeskApi
       @error ? true : false
     end
 
-    #appends more tickets to the tickets array if present
-    #accepts a Response object and will append the arg's tickets
-    def append_tickets(response)
-      return unless(@data['tickets'] && response.is_a?(Response) && response.data['tickets'])
-
-      @data['tickets'].concat(response.data['tickets'])
-    end
-
     private
       def log_error
         error = prettify_error
