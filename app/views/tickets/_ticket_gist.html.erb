@@ -1,0 +1,39 @@
+<div class="ticket-gist-container" data-priority="<%= ticket['priority']%>">
+
+  <div>
+    <% if ticket['status'] %>
+      <div class="ticket-status status-<%= ticket['status'] %>" title="Status">
+        <%= ticket['status'].capitalize %>
+      </div>
+    <% end %>
+
+    <% if ticket['priority'] %>
+      <div class="ticket-priority priority-<%= ticket['priority'] %>" title="Priority">
+        <%= ticket['priority'].capitalize %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <% if ticket['subject'] %>
+      <div class="ticket-subject" title="Subject">
+        <%= ticket['subject'] %>
+      </div>
+    <% end %>
+  </div>
+
+  <div>
+    <div class="ticket-requester" title="Requester">
+      By: <%= ticket['requester_id'] %>
+    </div>
+  </div>
+
+  <div>
+    <% if ticket['created_at'] %>
+      <div title="Created at">
+        Created: <%= ticket['created_at'] %>
+      </div>
+    <% end %>
+  </div>
+
+</div>

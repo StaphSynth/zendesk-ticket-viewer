@@ -1,0 +1,56 @@
+/*Tickets styling*/
+
+.tickets-list li {
+  margin: 1.5em 0;
+}
+
+.ticket-gist-container {
+  display: flex;
+  flex-flow: row;
+  flex-wrap: wrap;
+  padding: 1em;
+  border: solid 1px grey;
+  border-radius: 3px;
+
+  div {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+
+    div {
+      padding: 0.25em;
+      border-radius: 3px;
+      margin: 0 0.125em;
+    }
+
+    .ticket-subject {
+      white-space: normal;
+      font-weight: bold;
+    }
+  }
+}
+
+.status-open,
+.priority-urgent {
+  background-color: tomato;
+}
+
+.status-new,
+.priority-normal {
+  background-color: lightblue;
+}
+
+.status-pending,
+.priority-high {
+  background-color: gold;
+}
+
+.status-solved,
+.priority-low {
+  background-color: limegreen;
+}
+
+.status-closed {
+  background-color: dimgrey;
+}
