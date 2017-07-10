@@ -71,9 +71,8 @@ module ZendeskApi
     }
   end
 
-  #gets tickets from the ZD API. By default ZD API returns max 100 tickets,
-  #so call repeatedly to get everything. Accepts an optional query string, but
-  #can be expanded to accept an optional hash containing query string params
+  #gets tickets from the ZD API. Accepts an optional query string.
+  #returns a Response object containing the ticket data
   def self.get_tickets(query = nil)
     extension = 'tickets.json'
 
@@ -83,24 +82,20 @@ module ZendeskApi
     Response.new(response)
   end
 
-  #retrieves all tickets from the API by repeatedly calling get_tickets
-  #until there aren't any more to get. Returns a Response object
-  def self.get_all_tickets
-    tickets = get_tickets
-    return tickets if tickets.error?
+  #retrieves tickets from the API in chronological order from date of creation
+  #accepts optional :page => x and :per_page => y
+  #By default, the API returns max 100 tickets, so repeated calls with the page id
+  #are required to get all tickets
+  def self.get_all_tickets(query_hash = {})
+    query = '?sort_by=created_at'
 
-    url = tickets.data['next_page']
-
-    while(url) do
-      query = '?' + url.split('?')[1]
-      next_batch = get_tickets(query)
-
-      return next_batch if next_batch.error?
-
-      tickets.append_tickets(next_batch)
-      url = next_batch.data['next_page']
+    if(query_hash[:per_page] && query_hash[:per_page].between?(1,100))
+      query += "&per_page=#{query_hash[:per_page]}"
+    end
+    if(query_hash[:page])
+      query += "&page=#{query_hash[:page]}"
     end
 
-    return tickets
+    tickets = get_tickets(query)
   end
 end

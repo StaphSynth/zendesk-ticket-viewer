@@ -31,15 +31,15 @@ p {
 
 </style>
 
-<%= will_paginate %>
+<%= render 'paginate', prev_page: @prev, next_page: @next %>
 
 <ul>
   <% @tickets.each do |ticket| %>
     <li>
-      <h3><%= ticket['subject'] %></h3>
+      <h3><%= ticket['id'] %> <%= ticket['subject'] %></h3>
       <p><%= ticket['description'] %></p>
     </li>
   <% end %>
 </ul>
 
-<%= will_paginate %>
+<%= render 'paginate', prev_page: @prev, next_page: @next %>
