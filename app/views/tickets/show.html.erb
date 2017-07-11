@@ -1,9 +1,10 @@
 <% if @ticket %>
-  <div class="ticket-container">
-    <div>
 
-      <div>
-        #<%= @ticket['id'] %>
+  <div class="ticket-container">
+    <div class="ticket-meta meta-top">
+
+      <div title="Ticket ID">
+        <span><%= fa_icon 'ticket' %> <%= @ticket['id'] %></span>
       </div>
 
       <% if @ticket['status'] %>
@@ -19,7 +20,7 @@
       <% end %>
 
         <div class="ticket-requester" title="Requester">
-          By: <%= @ticket['requester_id'] %>
+          <span><%= fa_icon  'user' %> <a href="#"><%= @ticket['requester_id'] %></a></span>
         </div>
 
     </div>
@@ -34,10 +35,24 @@
 
     </div>
 
-    <div>
+    <div class="ticket-meta meta-bottom">
+
+      <% if @ticket['created_at'] %>
+        <div title="Created">
+          <span><%= fa_icon 'calendar' %> <%= @ticket['created_at'].to_date %></span>
+        </div>
+      <% end %>
+
+      <% if @ticket['updated_at'] %>
+        <div title="Last updated">
+          <span><%= fa_icon 'edit' %> <%= @ticket['updated_at'].to_date %></span>
+        </div>
+      <% end %>
 
       <% if @ticket['tags'] && !@ticket['tags'].empty? %>
-        Tags: <%= @ticket['tags'].join(', ') %>
+      <div title="Tags">
+        <span><%= fa_icon 'tags' %> <%= @ticket['tags'].join(', ') %></span>
+      </div>
       <% end %>
 
     </div>

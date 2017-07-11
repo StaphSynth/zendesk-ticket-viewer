@@ -1,6 +1,11 @@
 <div class="ticket-gist-container" data-priority="<%= ticket['priority']%>">
 
   <div>
+
+    <div title="Ticket ID">
+      <span><%= fa_icon 'ticket' %> <%= ticket['id'] %></span>
+    </div>
+
     <% if ticket['status'] %>
       <div class="ticket-status status-<%= ticket['status'] %>" title="Status">
         <%= ticket['status'].capitalize %>
@@ -24,14 +29,14 @@
 
   <div>
     <div class="ticket-requester" title="Requester">
-      By: <%= ticket['requester_id'] %>
+      <span><%= fa_icon  'user' %> <%= ticket['requester_id'] %></span>
     </div>
   </div>
 
   <div>
     <% if ticket['created_at'] %>
-      <div title="Created at">
-        Created: <%= ticket['created_at'] %>
+      <div title="Created">
+        <span><%= fa_icon 'calendar' %> <%= ticket['created_at'].to_date %></span>
       </div>
     <% end %>
   </div>

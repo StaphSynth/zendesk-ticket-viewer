@@ -1,9 +1,16 @@
-/*Tickets styling*/
+/*==========================================
+TICKETS.SCSS
+D. Allen 2017
+===========================================*/
 
 
-/* TICKET GIST LIST STYLING */
+
+/*=========================
+TICKET GISTS
+==========================*/
+
 .tickets-list li {
-  margin: 1.5em 0;
+  margin: 1.25em 0;
 
   a {
     text-decoration: none;
@@ -15,7 +22,7 @@
   display: flex;
   flex-flow: row;
   flex-wrap: wrap;
-  padding: 1em;
+  padding: 0.75em;
   border: solid 1px grey;
   border-radius: 3px;
 
@@ -39,7 +46,11 @@
 }
 
 
-/* MAIN TICKET DISPLAY */
+
+/*=========================
+FULL TICKET DISPLAY
+==========================*/
+
 .ticket-container {
   display: flex;
   flex-flow: column;
@@ -56,17 +67,37 @@
     div {
       padding: 0.25em;
       border-radius: 3px;
-      margin: 0 0.125em;
+      margin: 0 0.25em;
     }
 
     .ticket-subject {
       white-space: normal;
       font-weight: bold;
+      margin: 1em 0 0.25em;
     }
 
     .ticket-description {
       white-space: normal;
+      line-height: 1.1em;
     }
+  }
+
+  .ticket-meta {
+    flex-wrap: wrap;
+    font-size: 0.85em;
+  }
+
+  .meta-top {
+    padding-bottom: 0.5em;
+    border-bottom: 1px solid grey;
+
+    div {
+      margin-bottom: 0.5em
+    }
+  }
+
+  .meta-bottom {
+    padding-bottom: 0.5em;
   }
 }
 
@@ -93,3 +124,21 @@
 .status-closed {
   background-color: dimgrey;
 }
+
+
+
+/*=========================
+RESPONSIVE CSS
+==========================*/
+
+@media screen and (min-width: 600px) {
+
+  /*------------------
+  FULL TICKETS
+  -------------------*/
+
+  .ticket-subject h3 {
+    font-size: 1.65em;
+  }
+
+} /*End 600px query*/
