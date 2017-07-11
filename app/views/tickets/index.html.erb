@@ -2,7 +2,11 @@
 
 <ul class="tickets-list">
   <% @tickets.each do |ticket| %>
-    <li><%= render 'ticket_gist', ticket: ticket %></li>
+    <li>
+      <a href="/ticket?id=<%= ticket['id'] %>" target="_blank">
+        <%= render 'ticket_gist', ticket: ticket %>
+      </a>
+    </li>
   <% end %>
 </ul>
 

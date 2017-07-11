@@ -1,7 +1,14 @@
 /*Tickets styling*/
 
+
+/* TICKET GIST LIST STYLING */
 .tickets-list li {
   margin: 1.5em 0;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
 }
 
 .ticket-gist-container {
@@ -27,6 +34,38 @@
     .ticket-subject {
       white-space: normal;
       font-weight: bold;
+    }
+  }
+}
+
+
+/* MAIN TICKET DISPLAY */
+.ticket-container {
+  display: flex;
+  flex-flow: column;
+  padding: 1em;
+  border: solid 1px grey;
+  border-radius: 3px;
+
+  div {
+    display: flex;
+    flex-flow: row;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+
+    div {
+      padding: 0.25em;
+      border-radius: 3px;
+      margin: 0 0.125em;
+    }
+
+    .ticket-subject {
+      white-space: normal;
+      font-weight: bold;
+    }
+
+    .ticket-description {
+      white-space: normal;
     }
   }
 }

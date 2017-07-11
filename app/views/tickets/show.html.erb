@@ -1,0 +1,55 @@
+<% if @ticket %>
+  <div class="ticket-container">
+    <div>
+
+      <div>
+        #<%= @ticket['id'] %>
+      </div>
+
+      <% if @ticket['status'] %>
+        <div class="ticket-status status-<%= @ticket['status'] %>" title="Status">
+          <%= @ticket['status'].capitalize %>
+        </div>
+      <% end %>
+
+      <% if @ticket['priority'] %>
+        <div class="ticket-priority priority-<%= @ticket['priority'] %>" title="Priority">
+          <%= @ticket['priority'].capitalize %>
+        </div>
+      <% end %>
+
+        <div class="ticket-requester" title="Requester">
+          By: <%= @ticket['requester_id'] %>
+        </div>
+
+    </div>
+
+    <div>
+
+      <% if @ticket['subject'] %>
+        <div class="ticket-subject" title="Subject">
+          <h3><%= @ticket['subject'] %></h3>
+        </div>
+      <% end %>
+
+    </div>
+
+    <div>
+
+      <% if @ticket['tags'] && !@ticket['tags'].empty? %>
+        Tags: <%= @ticket['tags'].join(', ') %>
+      <% end %>
+
+    </div>
+
+    <div>
+
+      <% if @ticket['description'] %>
+        <div class="ticket-description">
+          <%= @ticket['description'] %>
+        </div>
+      <% end %>
+
+    </div>
+  </div>
+<% end %>
