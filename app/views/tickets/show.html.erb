@@ -1,5 +1,8 @@
 <% if @ticket %>
 
+  <% provide :heading, "Ticket ##{@ticket['id']}" %>
+  <% provide :title, "Ticket ##{@ticket['id']}" %>
+
   <div class="ticket-container">
     <div class="ticket-meta meta-top">
 

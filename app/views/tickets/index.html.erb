@@ -1,3 +1,7 @@
+<% @current_page ? title = "Ticket Index, Page #{@current_page}" : title = "Ticket Index" %>
+<% provide :title, title %>
+<% provide :heading, 'Zendesk Ticket Viewer' %>
+
 <%= render 'navigation', tickets: @tickets, prev_page: @prev_page, next_page: @next_page %>
 
 <ul class="tickets-list">

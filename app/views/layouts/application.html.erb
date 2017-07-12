@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Zendesk Ticket Viewer</title>
+    <title><%= yield :title %> | Zendesk Ticket Viewer</title>
     <%= csrf_meta_tags %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -11,7 +11,7 @@
 
   <body>
     <div class="container">
-      <h1>Zendesk Service Tickets</h1>
+      <h1><%= yield :heading %></h1>
 
       <% flash.each do |key, value| %>
         <div class="flash flash-<%= key %>">
