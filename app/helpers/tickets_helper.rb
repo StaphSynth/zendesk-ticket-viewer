@@ -6,4 +6,8 @@ module TicketsHelper
     query = CGI.parse(url.split('?')[1])
     return query['page'][0]
   end
+
+  def get_last_page_number(ticket_number, tickets_per_page)
+    (ticket_number.to_f / tickets_per_page).ceil.to_s
+  end
 end

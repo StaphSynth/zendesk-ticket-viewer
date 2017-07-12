@@ -1,4 +1,8 @@
-/*BASE style for Zendesk Ticket Viewer*/
+/*==========================================
+BASE style for Zendesk Ticket Viewer
+===========================================*/
+
+
 
 /*=========================
 GENERAL
@@ -9,6 +13,7 @@ GENERAL
   max-width: 1024px;
   padding: 2%;
 }
+
 
 
 /*=========================
@@ -30,6 +35,8 @@ h3 {
   font-size: 1.25em;
 }
 
+
+
 /*=========================
 FLASH
 =========================*/
@@ -46,4 +53,30 @@ FLASH
 
 .flash-notice {
   background-color: lightblue;
+}
+
+
+
+/*=========================
+NAVIGATION
+=========================*/
+
+.navigation {
+  text-align: center;
+  margin: 1em 0;
+
+  a {
+    text-decoration: none;
+    color: inherit;
+    padding: 0.5em 0.75em;
+    background-color: lightblue;
+    border-radius: 3px;
+    margin: 0.25em 0.33em;
+  }
+
+  .disabled {
+    pointer-events: none;
+    cursor: default;
+    background-color: lightgrey;
+  }
 }

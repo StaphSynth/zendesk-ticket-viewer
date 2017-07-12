@@ -1,0 +1,25 @@
+<nav class="navigation">
+
+  <%= link_to root_url, class: ('disabled' if !@current_page || @current_page == 1) do %>
+    <%= fa_icon 'fast-backward' %>
+  <% end %>
+
+  <% prev_page = root_url + '?page=' + get_page_number(prev_page) if prev_page %>
+  <%= link_to (prev_page ? prev_page : '#'), class: ('disabled' unless prev_page) do %>
+    <%= fa_icon 'caret-left' %>
+  <% end %>
+
+  <span><%= fa_icon 'ticket' %> <%= tickets[0]['id'] %> - <%= tickets[-1]['id'] %></span>
+
+  <% next_page = root_url + '?page=' + get_page_number(next_page) if next_page %>
+    <%= link_to (next_page ? next_page : '#'), class: ('disabled' unless next_page) do %>
+      <%= fa_icon 'caret-right' %>
+    <% end %>
+
+  <% last_page = get_last_page_number(@total_tickets, @per_page) %>
+  <% last_page_url = root_url + '?page=' + last_page %>
+  <%= link_to last_page_url, class: ('disabled' if @current_page == last_page || last_page == 1) do %>
+    <%= fa_icon 'fast-forward' %>
+  <% end %>
+
+</nav>

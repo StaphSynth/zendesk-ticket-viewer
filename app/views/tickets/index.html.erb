@@ -1,4 +1,4 @@
-<%= render 'paginate', prev_page: @prev, next_page: @next %>
+<%= render 'navigation', tickets: @tickets, prev_page: @prev_page, next_page: @next_page %>
 
 <ul class="tickets-list">
   <% @tickets.each do |ticket| %>
@@ -10,4 +10,4 @@
   <% end %>
 </ul>
 
-<%= render 'paginate', prev_page: @prev, next_page: @next %>
+<%= render 'navigation', tickets: @tickets, prev_page: @prev_page, next_page: @next_page %>
