@@ -5,9 +5,7 @@ class TicketsController < ApplicationController
   def index
     @tickets = []
     @total_tickets = nil
-    @next_page = nil
-    @prev_page = nil
-    @current_page = params[:page] || nil
+    @current_page = params[:page].to_i || nil
     @per_page = 25
 
     response = ZendeskApi.get_all_tickets(per_page: @per_page, page: params[:page])
@@ -16,9 +14,8 @@ class TicketsController < ApplicationController
       flash[:error] = error_msg
     else
       @tickets = response.data['tickets']
-      @next_page = response.data['next_page']
-      @prev_page = response.data['previous_page']
       @total_tickets = response.data['count']
+      @total_pages = (@total_tickets.to_f / @per_page).ceil
     end
   end
 
