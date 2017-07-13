@@ -7,31 +7,18 @@ module ZendeskApi
     get_req(extension)
   end
 
-  #gets a list of tickets from the ZD API. Accepts an optional query string.
-  #if no query passed, simply returns the first 100 tickets the API serves
-  #returns a Response object containing the ticket data
-  def self.get_tickets(query = nil)
+  #retrieves tickets from the API. Accepts an optional hash of query params
+  #which are supported by the ZD API.
+  #example: get_tickets(page: 2, per_page: 25, sort_by: :created_at)
+  def self.get_tickets(query_hash = {})
     extension = 'tickets.json'
-    extension += query if(query && query.is_a?(String))
+
+    unless(query_hash.empty?)
+      extension += '?' + query_hash.map { |key, value| key.to_s + '=' + value.to_s }.join('&')
+      extension = URI.escape(extension)
+    end
 
     get_req(extension)
-  end
-
-  #retrieves tickets from the API in chronological order from date of creation
-  #accepts optional :page => x and :per_page => y
-  #By default, the API returns max 100 tickets, so repeated calls with the page id
-  #are required to get all tickets
-  def self.get_all_tickets(query_hash = {})
-    query = '?sort_by=created_at'
-
-    if(query_hash[:per_page] && query_hash[:per_page].between?(1,100))
-      query += "&per_page=#{query_hash[:per_page]}"
-    end
-    if(query_hash[:page])
-      query += "&page=#{query_hash[:page]}"
-    end
-
-    tickets = get_tickets(query)
   end
 
   private
