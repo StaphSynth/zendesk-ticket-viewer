@@ -1,26 +1,28 @@
-<nav class="navigation">
+<% unless tickets.empty? %>
+  <nav class="navigation">
 
-  <% page_url = root_url + '?page=' %>
+    <% page_url = root_url + '?page=' %>
 
-  <%= link_to root_url, class: ('disabled' if !@current_page || @current_page <= 1) do %>
-    <%= fa_icon 'fast-backward' %>
-  <% end %>
-
-  <% prev_page = (@current_page - 1 if @current_page && @current_page > 1) || nil %>
-  <%= link_to (prev_page ? page_url + prev_page.to_s : '#'), class: ('disabled' unless prev_page) do %>
-    <%= fa_icon 'caret-left' %>
-  <% end %>
-
-  <span><%= fa_icon 'ticket' %> <%= tickets[0]['id'] %> - <%= tickets[-1]['id'] %></span>
-
-  <% next_page = get_next_page(@current_page, @total_pages) %>
-    <%= link_to (next_page ? page_url + next_page.to_s : '#'), class: ('disabled' unless next_page) do %>
-      <%= fa_icon 'caret-right' %>
+    <%= link_to root_url, class: ('disabled' if !@current_page || @current_page <= 1) do %>
+      <%= fa_icon 'fast-backward' %>
     <% end %>
 
-  <% last_page_url = root_url + '?page=' + @total_pages.to_s %>
-  <%= link_to last_page_url, class: ('disabled' if @current_page == @total_pages || @total_pages == 1) do %>
-    <%= fa_icon 'fast-forward' %>
-  <% end %>
+    <% prev_page = (@current_page - 1 if @current_page && @current_page > 1) || nil %>
+    <%= link_to (prev_page ? page_url + prev_page.to_s : '#'), class: ('disabled' unless prev_page) do %>
+      <%= fa_icon 'caret-left' %>
+    <% end %>
 
-</nav>
+    <span><%= fa_icon 'ticket' %> <%= tickets[0]['id'] %> - <%= tickets[-1]['id'] %></span>
+
+    <% next_page = get_next_page(@current_page, @total_pages) %>
+      <%= link_to (next_page ? page_url + next_page.to_s : '#'), class: ('disabled' unless next_page) do %>
+        <%= fa_icon 'caret-right' %>
+      <% end %>
+
+    <% last_page_url = root_url + '?page=' + @total_pages.to_s %>
+    <%= link_to last_page_url, class: ('disabled' if @current_page == @total_pages || @total_pages == 1) do %>
+      <%= fa_icon 'fast-forward' %>
+    <% end %>
+
+  </nav>
+<% end %>
