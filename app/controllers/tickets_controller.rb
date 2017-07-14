@@ -8,7 +8,7 @@ class TicketsController < ApplicationController
     @current_page = params[:page].to_i || nil
     @per_page = 25
 
-    response = ZendeskApi.get_tickets(per_page: @per_page, page: params[:page], sort_by: :created_at)
+    response = ZendeskApi.get_tickets(per_page: @per_page, page: (params[:page] || 1), sort_by: :created_at)
 
     if(response.error?)
       flash[:error] = error_msg

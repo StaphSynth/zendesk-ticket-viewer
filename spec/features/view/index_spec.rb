@@ -4,7 +4,7 @@ require 'base64'
 RSpec.feature 'Index', type: :feature do
   scenario 'View the ticket index page' do
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=&per_page=25&sort_by=created_at").
+    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
       with(headers: {
         'Accept'=>'*/*',
         'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
