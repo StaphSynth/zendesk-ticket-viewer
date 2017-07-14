@@ -1,3 +1,6 @@
+#This file contains constants used a lot in the test specs.
+#It still needs to be updated if the site implementation changes,
+#but at least the test specs are a little more DRY...
 
 #headers for the mock_api calls
 def req_headers
@@ -10,6 +13,7 @@ def req_headers
   }
 end
 
+#Text constants used by the site
 module Site
   def self.title
     'Zendesk Ticket Viewer'
