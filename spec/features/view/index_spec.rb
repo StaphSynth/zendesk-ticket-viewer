@@ -28,11 +28,11 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
       with(headers: req_headers).to_return(status: 200, body: JSON.generate(response_body), headers: {})
 
-      visit '/'
+    visit '/'
 
-      expect(page).to have_text(Site.title)
-      expect(page).not_to have_selector('.ticket-gist-container')
-      expect(page).to have_text('There are no tickets to display.')
+    expect(page).to have_text(Site.title)
+    expect(page).not_to have_selector('.ticket-gist-container')
+    expect(page).to have_text('There are no tickets to display.')
   end
 
   #if the ZD API return code != 200, then the controller should flash an error message
@@ -46,11 +46,11 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
       with(headers: req_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
 
-      visit '/'
+    visit '/'
 
-      expect(page).to have_text(Site.title)
-      expect(page).not_to have_selector('.ticket-gist-container')
-      expect(page).to have_text(Site.error_msg)
+    expect(page).to have_text(Site.title)
+    expect(page).not_to have_selector('.ticket-gist-container')
+    expect(page).to have_text(Site.error_msg)
   end
 
   #in an attempt to load a results page that doesn't exist, the controller should redirect to the
