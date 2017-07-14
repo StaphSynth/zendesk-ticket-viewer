@@ -1,12 +1,13 @@
 require 'rails_helper'
+require 'constants'
 
 RSpec.feature 'Show', type: :feature do
 
   #happy path: successful individual ticket view
   scenario 'View individual ticket details' do
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets/1.json").
-      with(headers: api_headers).to_return(status: 200, body: File.read('spec/mock_data/ticket.json'), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
+      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/ticket.json'), headers: {})
 
     visit '/ticket?id=1'
 
@@ -23,19 +24,18 @@ RSpec.feature 'Show', type: :feature do
       description: "Er, the server drank all the wine..."
     }
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets/1.json").
-      with(headers: api_headers).to_return(status: 500, body: JSON.generate(response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
+      with(headers: req_headers).to_return(status: 500, body: JSON.generate(response_body), headers: {})
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
 
     visit '/ticket?id=1'
 
     expect(page).to have_current_path('/')
-    expect(page).to have_text('Zendesk Ticket Viewer')
+    expect(page).to have_text(Site.title)
     expect(page).to have_selector('.ticket-gist-container', count: 25)
-    expect(page).to have_text('Oops! There was an error getting the ticket data, please try again.
-                              If this error continues, contact your system administrator.')
+    expect(page).to have_text(Site.error_msg)
   end
 
   #an attempt to view a ticket that doesn't exist should cause
@@ -47,18 +47,17 @@ RSpec.feature 'Show', type: :feature do
       description: 'Not Found'
     }
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets/26.json").
-      with(headers: api_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/26.json').
+      with(headers: req_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
 
     visit '/ticket?id=26'
 
     expect(page).to have_current_path('/')
-    expect(page).to have_text('Zendesk Ticket Viewer')
+    expect(page).to have_text(Site.title)
     expect(page).to have_selector('.ticket-gist-container', count: 25)
-    expect(page).to have_text('Oops! There was an error getting the ticket data, please try again.
-                              If this error continues, contact your system administrator.')
+    expect(page).to have_text(Site.error_msg)
   end
 end

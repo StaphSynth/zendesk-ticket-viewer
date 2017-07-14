@@ -1,16 +1,17 @@
 require 'rails_helper'
+require 'constants'
 
 RSpec.feature 'Ticket Controller Index', type: :feature do
 
   #the happy path: a page full of tickets
   scenario 'View the ticket index page full of tickets' do
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
 
     visit '/'
 
-    expect(page).to have_text('Zendesk Ticket Viewer')
+    expect(page).to have_text(Site.title)
     expect(page).to have_selector('.ticket-gist-container', count: 25)
   end
 
@@ -24,12 +25,12 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
       previous_page: nil
     }
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 200, body: JSON.generate(response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: req_headers).to_return(status: 200, body: JSON.generate(response_body), headers: {})
 
       visit '/'
 
-      expect(page).to have_text('Zendesk Ticket Viewer')
+      expect(page).to have_text(Site.title)
       expect(page).not_to have_selector('.ticket-gist-container')
       expect(page).to have_text('There are no tickets to display.')
   end
@@ -42,15 +43,14 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
       description: 'Not found'
     }
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: req_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
 
       visit '/'
 
-      expect(page).to have_text('Zendesk Ticket Viewer')
+      expect(page).to have_text(Site.title)
       expect(page).not_to have_selector('.ticket-gist-container')
-      expect(page).to have_text('Oops! There was an error getting the ticket data, please try again.
-                                If this error continues, contact your system administrator.')
+      expect(page).to have_text(Site.error_msg)
   end
 
   #in an attempt to load a results page that doesn't exist, the controller should redirect to the
@@ -61,18 +61,18 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
       tickets: [],
       count: 25,
       next_page: nil,
-      previous_page: Rails.application.secrets.ZD_URL + 'tickets.json?page=1&per_page=25&sort_by=created_at'
+      previous_page: Rails.application.secrets.ZD_URL + Site.index
     }
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=2&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 200, body: JSON.generate(initial_response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets.json?page=2&per_page=25&sort_by=created_at').
+      with(headers: req_headers).to_return(status: 200, body: JSON.generate(initial_response_body), headers: {})
 
-    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
-      with(headers: api_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
 
     visit '/?page=2'
 
-    expect(page).to have_text('Zendesk Ticket Viewer')
+    expect(page).to have_text(Site.title)
     expect(page).to have_text('There is only 1 page of results.')
     expect(page).to have_current_path('/?page=1')
   end
