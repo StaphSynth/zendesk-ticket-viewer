@@ -20,7 +20,7 @@ class TicketsController < ApplicationController
       #redirect to last page if user attempts to visit a results page that doesn't exist
       if(params[:page].to_i > @total_pages)
         redirect_to(root_url + "?page=#{@total_pages}")
-        flash[:notice] = "There are only #{@total_pages} #{'page'.pluralize(@total_pages)} of results."
+        flash[:notice] = "There #{@total_pages == 1 ? 'is' : 'are'} only #{@total_pages} #{'page'.pluralize(@total_pages)} of results."
         return
       end
 
