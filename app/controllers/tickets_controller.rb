@@ -16,6 +16,15 @@ class TicketsController < ApplicationController
       @tickets = response.data['tickets']
       @total_tickets = response.data['count']
       @total_pages = (@total_tickets.to_f / @per_page).ceil
+
+      #redirect to last page if user attempts to visit a results page that doesn't exist
+      if(params[:page].to_i > @total_pages)
+        redirect_to(root_url + "?page=#{@total_pages}")
+        flash[:notice] = "There are only #{@total_pages} #{'page'.pluralize(@total_pages)} of results."
+        return
+      end
+
+      flash[:notice] = 'There are no tickets to display.' if @tickets.empty?
     end
   end
 
