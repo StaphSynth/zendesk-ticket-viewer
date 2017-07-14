@@ -37,4 +37,28 @@ RSpec.feature 'Show', type: :feature do
     expect(page).to have_text('Oops! There was an error getting the ticket data, please try again.
                               If this error continues, contact your system administrator.')
   end
+
+  #an attempt to view a ticket that doesn't exist should cause
+  #a 404 error and force a redirect to the index page
+  scenario 'User attempts to load a ticket that doesn\'t exist' do
+
+    response_body = {
+      error: 'RecordNotFound',
+      description: 'Not Found'
+    }
+
+    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets/26.json").
+      with(headers: api_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
+
+    stub_request(:get, "#{Rails.application.secrets.ZD_URL}tickets.json?page=1&per_page=25&sort_by=created_at").
+      with(headers: api_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+
+    visit '/ticket?id=26'
+
+    expect(page).to have_current_path('/')
+    expect(page).to have_text('Zendesk Ticket Viewer')
+    expect(page).to have_selector('.ticket-gist-container', count: 25)
+    expect(page).to have_text('Oops! There was an error getting the ticket data, please try again.
+                              If this error continues, contact your system administrator.')
+  end
 end
