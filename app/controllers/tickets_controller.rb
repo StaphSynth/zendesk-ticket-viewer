@@ -34,6 +34,7 @@ class TicketsController < ApplicationController
     response = ZendeskApi.get_ticket(params[:id])
 
     if(response.error?)
+      redirect_to(root_url)
       flash[:error] = error_msg
     else
       @ticket = response.data['ticket']
