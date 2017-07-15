@@ -1,0 +1,11 @@
+development:
+  tickets:
+    per_page: 25 #sets the max number of tickets displayed per page
+
+test:
+  tickets:
+    per_page: 25
+
+production:
+  tickets:
+    per_page: 25

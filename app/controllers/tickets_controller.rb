@@ -6,7 +6,7 @@ class TicketsController < ApplicationController
     @tickets = []
     @total_tickets = nil
     @current_page = params[:page].to_i || nil
-    @per_page = 25
+    @per_page = CONFIG['tickets']['per_page']
 
     response = ZendeskApi.get_tickets(per_page: @per_page, page: (params[:page] || 1), sort_by: :created_at)
 
