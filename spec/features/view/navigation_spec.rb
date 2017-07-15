@@ -26,6 +26,8 @@ RSpec.feature 'Navigation links', type: :feature do
     #fill the page with tickets, and set the count to 100 (gives 4 total pages with 25pp)
     response_body = JSON.parse(File.read('spec/mock_data/tickets.json'))
     response_body['count'] = 100
+    response_body['next_page'] = nil
+    response_body['previous_page'] = Rails.application.secrets.ZD_URL + 'tickets.json?page=3&per_page=25&sort_by=created_at'
 
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets.json?page=4&per_page=25&sort_by=created_at').
       with(headers: req_headers).to_return(status: 200, body: JSON.generate(response_body), headers: {})
