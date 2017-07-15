@@ -3,24 +3,25 @@
 
     <% page_url = root_url + '?page=' %>
 
-    <%= link_to root_url, class: ('disabled' if !@current_page || @current_page <= 1) do %>
+    <% (!@current_page || @current_page <= 1) ? first_page = true : first_page = false %>
+    <%= link_to (first_page ? '#' : root_url), class: ['first', ('disabled' if first_page)] do %>
       <%= fa_icon 'fast-backward' %>
     <% end %>
 
     <% prev_page = (@current_page - 1 if @current_page && @current_page > 1) || nil %>
-    <%= link_to (prev_page ? page_url + prev_page.to_s : '#'), class: ('disabled' unless prev_page) do %>
+    <%= link_to (prev_page ? page_url + prev_page.to_s : '#'), class: ['back', ('disabled' unless prev_page)] do %>
       <%= fa_icon 'caret-left' %>
     <% end %>
 
     <span><%= fa_icon 'ticket' %> <%= tickets[0]['id'] %> - <%= tickets[-1]['id'] %></span>
 
     <% next_page = get_next_page(@current_page, @total_pages) %>
-      <%= link_to (next_page ? page_url + next_page.to_s : '#'), class: ('disabled' unless next_page) do %>
+      <%= link_to (next_page ? page_url + next_page.to_s : '#'), class: ['forward', ('disabled' unless next_page)] do %>
         <%= fa_icon 'caret-right' %>
       <% end %>
 
-    <% last_page_url = root_url + '?page=' + @total_pages.to_s %>
-    <%= link_to last_page_url, class: ('disabled' if @current_page == @total_pages || @total_pages == 1) do %>
+    <% (@current_page == @total_pages || @total_pages == 1) ? last_page = true : last_page = false %>
+    <%= link_to (last_page ? '#' : page_url + @total_pages.to_s), class: ['last', ('disabled' if last_page)] do %>
       <%= fa_icon 'fast-forward' %>
     <% end %>
 
