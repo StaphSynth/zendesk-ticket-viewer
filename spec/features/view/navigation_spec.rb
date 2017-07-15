@@ -1,7 +1,7 @@
 #tests the navigation links
 
 require 'rails_helper'
-require 'constants'
+require 'suite_helper'
 
 RSpec.feature 'Navigation links', type: :feature do
 

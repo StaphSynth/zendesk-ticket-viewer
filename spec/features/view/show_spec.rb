@@ -1,5 +1,5 @@
 require 'rails_helper'
-require 'constants'
+require 'suite_helper'
 
 RSpec.feature 'Show', type: :feature do
 

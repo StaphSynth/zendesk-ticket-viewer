@@ -27,4 +27,8 @@ module Site
   def self.index
     'tickets.json?page=1&per_page=25&sort_by=created_at'
   end
+
+  def self.per_page
+    CONFIG['tickets']['per_page']
+  end
 end
