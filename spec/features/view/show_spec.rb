@@ -1,14 +1,17 @@
+#tests the Show action of the Tickets controller via the rendered view
+
 require 'rails_helper'
 require 'suite_helper'
 
 RSpec.feature 'Ticket Controller: Show', type: :feature do
 
-    before(:each) do
-      @total_tickets = Site.per_page * 5
-      @response_ticket = Mock.ticket_response
-      @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
-      FactoryGirl.reload
-    end
+  #setup environment
+  before(:each) do
+    @total_tickets = Site.per_page * 5
+    @response_ticket = Mock.ticket_response
+    @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+    FactoryGirl.reload
+  end
 
   #happy path: successful individual ticket view
   scenario 'View individual ticket details' do

@@ -1,10 +1,11 @@
-#tests the navigation links
+#tests the navigation links of the ticket viewer
 
 require 'rails_helper'
 require 'suite_helper'
 
 RSpec.feature 'Navigation links', type: :feature do
 
+  #setup environment
   before(:each) do
     @total_tickets = Site.per_page * 5
     @last_page = (@total_tickets / Site.per_page.to_f).ceil

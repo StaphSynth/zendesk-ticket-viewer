@@ -1,8 +1,11 @@
+#tests the index action of the Tickets controller via the rendered view
+
 require 'rails_helper'
 require 'suite_helper'
 
-RSpec.feature 'Ticket Controller: Index', type: :feature do
+RSpec.feature 'Tickets Controller: Index', type: :feature do
 
+  #setup environment
   before(:each) do
     @total_tickets = Site.per_page * 5
     @last_page = (@total_tickets / Site.per_page.to_f).ceil
@@ -63,7 +66,7 @@ RSpec.feature 'Ticket Controller: Index', type: :feature do
   end
 
   #in an attempt to load a results page that doesn't exist, the controller should redirect to the
-  #last available page of results (in this case, page 1) and flash a notice to the user
+  #last available page of results and flash a notice to the user
   scenario 'Attempt to request a results page that doesn\'t exist' do
 
     non_extant_page = @last_page + 1
