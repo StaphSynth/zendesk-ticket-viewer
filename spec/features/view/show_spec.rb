@@ -1,13 +1,20 @@
 require 'rails_helper'
 require 'suite_helper'
 
-RSpec.feature 'Show', type: :feature do
+RSpec.feature 'Ticket Controller: Show', type: :feature do
+
+    before(:each) do
+      @total_tickets = Site.per_page * 5
+      @response_ticket = Mock.ticket_response
+      @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+      FactoryGirl.reload
+    end
 
   #happy path: successful individual ticket view
   scenario 'View individual ticket details' do
 
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
-      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/ticket.json'), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_ticket, headers: {})
 
     visit '/ticket?id=1'
 
@@ -19,22 +26,23 @@ RSpec.feature 'Show', type: :feature do
   #the controller should redirect to root and flash an error message
   scenario 'API returns an error when trying to view ticket' do
 
-    response_body = {
+    fail_response = {
       error: "Internal Server Error",
       description: "Er, the server drank all the wine..."
     }
+    fail_response = JSON.generate(fail_response)
 
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
-      with(headers: req_headers).to_return(status: 500, body: JSON.generate(response_body), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 500, body: fail_response, headers: {})
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit '/ticket?id=1'
 
     expect(page).to have_current_path('/')
     expect(page).to have_text(Site.title)
-    expect(page).to have_selector('.ticket-gist-container', count: 25)
+    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
     expect(page).to have_text(Site.error_msg)
   end
 
@@ -42,22 +50,24 @@ RSpec.feature 'Show', type: :feature do
   #a 404 error and force a redirect to the index page
   scenario 'User attempts to load a ticket that doesn\'t exist' do
 
-    response_body = {
+    non_extant_ticket = @total_tickets + 1
+    fail_response = {
       error: 'RecordNotFound',
       description: 'Not Found'
     }
+    fail_response = JSON.generate(fail_response)
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/26.json').
-      with(headers: req_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + "tickets/#{non_extant_ticket}.json").
+      with(headers: Mock.req_headers).to_return(status: 404, body: fail_response, headers: {})
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit '/ticket?id=26'
+    visit "/ticket?id=#{non_extant_ticket}"
 
     expect(page).to have_current_path('/')
     expect(page).to have_text(Site.title)
-    expect(page).to have_selector('.ticket-gist-container', count: 25)
+    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
     expect(page).to have_text(Site.error_msg)
   end
 end

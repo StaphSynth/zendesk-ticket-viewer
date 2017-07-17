@@ -1,32 +1,40 @@
 require 'rails_helper'
 require 'suite_helper'
 
-RSpec.feature 'Ticket Controller Index', type: :feature do
+RSpec.feature 'Ticket Controller: Index', type: :feature do
+
+  before(:each) do
+    @total_tickets = Site.per_page * 5
+    @last_page = (@total_tickets / Site.per_page.to_f).ceil
+    @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+    FactoryGirl.reload
+  end
 
   #the happy path: a page full of tickets
   scenario 'View the ticket index page full of tickets' do
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit '/'
 
     expect(page).to have_text(Site.title)
-    expect(page).to have_selector('.ticket-gist-container', count: 25)
+    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
   end
 
   #if there are no tickets associated with an account, then it should say so.
   scenario 'View the page with no tickets returned by the API' do
 
-    response_body = {
+    empty_response = {
       tickets: [],
       count: 0,
       next_page: nil,
       previous_page: nil
     }
+    empty_response = JSON.generate(empty_response)
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: req_headers).to_return(status: 200, body: JSON.generate(response_body), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 200, body: empty_response, headers: {})
 
     visit '/'
 
@@ -38,13 +46,14 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
   #if the ZD API return code != 200, then the controller should flash an error message
   scenario 'View the page when the API has returned an error' do
 
-    response_body = {
+    fail_response = {
       error: 'InvalidEndpoint',
       description: 'Not found'
     }
+    fail_response = JSON.generate(fail_response)
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: req_headers).to_return(status: 404, body: JSON.generate(response_body), headers: {})
+      with(headers: Mock.req_headers).to_return(status: 404, body: fail_response, headers: {})
 
     visit '/'
 
@@ -57,24 +66,29 @@ RSpec.feature 'Ticket Controller Index', type: :feature do
   #last available page of results (in this case, page 1) and flash a notice to the user
   scenario 'Attempt to request a results page that doesn\'t exist' do
 
-    initial_response_body = {
+    non_extant_page = @last_page + 1
+    bad_request = "tickets.json?page=#{non_extant_page}&per_page=#{Site.per_page}&sort_by=created_at"
+    good_request = "tickets.json?page=#{@last_page}&per_page=#{Site.per_page}&sort_by=created_at"
+
+    initial_response = {
       tickets: [],
-      count: 25,
+      count: @total_tickets,
       next_page: nil,
-      previous_page: Rails.application.secrets.ZD_URL + Site.index
+      previous_page: good_request
     }
+    initial_response = JSON.generate(initial_response)
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets.json?page=2&per_page=25&sort_by=created_at').
-      with(headers: req_headers).to_return(status: 200, body: JSON.generate(initial_response_body), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + bad_request).
+      with(headers: Mock.req_headers).to_return(status: 200, body: initial_response, headers: {})
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: req_headers).to_return(status: 200, body: File.read('spec/mock_data/tickets.json'), headers: {})
+    stub_request(:get, Rails.application.secrets.ZD_URL + good_request).
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit '/?page=2'
+    visit "/?page=#{non_extant_page}"
 
     expect(page).to have_text(Site.title)
-    expect(page).to have_text('There is only 1 page of results.')
-    expect(page).to have_current_path('/?page=1')
+    expect(page).to have_text("There are only #{@last_page} pages of results.")
+    expect(page).to have_current_path("/?page=#{@last_page}")
   end
 
 end
