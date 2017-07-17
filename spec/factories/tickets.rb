@@ -17,8 +17,8 @@ FactoryGirl.define do
     subject { Faker::Hipster.sentence(4, false, 3) }
     description { Faker::Hipster.paragraph(6, false, 4) }
     tags { Faker::Hipster.words(rand(1..6)) }
-    created_at { Time.now.iso8601.to_s }
-    updated_at { Time.now.iso8601.to_s }
+    created_at { Time.now.utc.iso8601.to_s }
+    updated_at { Time.now.utc.iso8601.to_s }
 
     initialize_with { attributes }
   end
