@@ -23,6 +23,7 @@ group :development, :test do
   gem 'capybara', '~> 2.5'
   gem 'webmock'
   gem 'factory_girl_rails', '~> 4.5.0'
+  gem 'faker', '~> 1.6.1'
 end
 
 group :development do
@@ -36,7 +37,6 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.0', require: false
-  gem 'faker', '~> 1.6.1'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
