@@ -1,24 +1,18 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+### Setup instructions
+* Make sure you have Ruby >= v2.3.1 installed
+* Clone the repo
+`$ cd path/to/repo`
+* Run bundle install
+`$ bundle install`
+* Generate a new secret key and add it to the Rails secrets file
+`$ rake secret`
+  * Copy the output of `rake secret` and paste it into the `secret_key_base` of `{repo_name}/config/secrets.example.yml`
+  * You will then need to change the email and subdomain sections to conform to a Zendesk Account
+  * Change the name of the file to `secrets.yml`
+* `$ rails s`
+* Point your browser to `localhost:3000`
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+### Running the test suite
+Assuming you have setup the secrets file described above, then simply `$ bundle exec rspec`
