@@ -10,14 +10,20 @@ RSpec.feature 'Navigation links', type: :feature do
     @total_tickets = Site.per_page * 5
     @last_page = (@total_tickets / Site.per_page.to_f).ceil
     @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+
+    #commonly used stubs
+    @index_stub = stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
+
+    @last_page_stub = stub_request(:get, Rails.application.secrets.ZD_URL +
+      "tickets.json?page=#{@last_page}&per_page=#{Site.per_page}&sort_by=created_at").
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
+
     FactoryGirl.reload
   end
 
   #since at the index, you can't go back anywhere...
   scenario 'On displaying the index page, the "back" buttons are disabled' do
-
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
-      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit '/'
 
@@ -65,5 +71,69 @@ RSpec.feature 'Navigation links', type: :feature do
     all('a.last').each { |a| expect(a['href']).to eq(root_url + "?page=#{@last_page}") }
     all('a.first').each { |a| expect(a['href']).to eq(root_url) }
     all('a.back').each { |a| expect(a['href']).to eq(root_url + "?page=#{middle_page - 1}") }
+  end
+
+  #it's not enough just to know the buttons exist. Do they actually work?
+  context 'clicking the navigation links' do
+
+    #click next
+    scenario 'clicking the "forward" link takes you to the next page' do
+
+    stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=2&per_page=#{Site.per_page}&sort_by=created_at").
+      with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
+
+    visit '/'
+    first('a.forward').click
+
+    expect(page).to have_current_path('/?page=2')
+    end
+
+    #click last
+    scenario 'clicking the "fast-forward" link takes you to the last page' do
+
+      visit '/'
+      first('a.last').click
+
+      expect(page).to have_current_path("/?page=#{@last_page}")
+    end
+
+    #click back
+    scenario 'clicking the "back" link takes you to the previous page' do
+
+      stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=#{@last_page - 1}&per_page=#{Site.per_page}&sort_by=created_at").
+        with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
+
+      visit "/?page=#{@last_page}"
+      first('a.back').click
+
+      expect(page).to have_current_path("/?page=#{@last_page - 1}")
+    end
+
+    #click first
+    scenario 'clicking the "rewind" link takes you to the first page' do
+
+      visit "/?page=#{@last_page}"
+      first('a.first').click
+
+      expect(page).to have_current_path('/')
+    end
+
+    #click the greyed-out links
+    scenario 'clicking on a "disabled" link does nothing' do
+
+      #at the root the 'back' links do nothing
+      visit '/'
+      first('a.first.disabled').click
+      expect(page).to have_current_path('/')
+      first('a.back.disabled').click
+      expect(page).to have_current_path('/')
+
+      #on the last page, the 'forward' links do nothing
+      visit "/?page=#{@last_page}"
+      first('a.last.disabled').click
+      expect(page).to have_current_path("/?page=#{@last_page}")
+      first('a.forward.disabled').click
+      expect(page).to have_current_path("/?page=#{@last_page}")
+    end
   end
 end
