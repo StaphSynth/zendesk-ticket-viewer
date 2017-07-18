@@ -65,6 +65,19 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
     expect(page).to have_text(Site.error_msg)
   end
 
+  #if the API is not available, the controller should flash an error message
+  scenario 'View the index page on API request timeout' do
+
+    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      with(headers: Mock.req_headers).to_timeout
+
+    visit '/'
+
+    expect(page).to have_text(Site.title)
+    expect(page).to have_text(Site.error_msg)
+    expect(page).not_to have_selector('.ticket-gist-container')
+  end
+
   #in an attempt to load a results page that doesn't exist, the controller should redirect to the
   #last available page of results and flash a notice to the user
   scenario 'Attempt to request a results page that doesn\'t exist' do

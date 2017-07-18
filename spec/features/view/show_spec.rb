@@ -49,6 +49,18 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     expect(page).to have_text(Site.error_msg)
   end
 
+  #if the API request times out, the controller should display an error message
+  scenario 'API times out when trying to view a ticket' do
+
+    stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
+      with(headers: Mock.req_headers).to_timeout
+
+    visit '/ticket?id=1'
+
+    expect(page).to have_text(Site.error_msg)
+    expect(page).not_to have_selector('.ticket-container')
+  end
+
   #an attempt to view a ticket that doesn't exist should cause
   #a 404 error and force a redirect to the index page
   scenario 'User attempts to load a ticket that doesn\'t exist' do

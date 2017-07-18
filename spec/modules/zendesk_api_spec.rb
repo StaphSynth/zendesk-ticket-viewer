@@ -23,6 +23,15 @@ describe 'The ZendeskApi module' do
       expect(ticket.data['ticket']['id']).to eq(1)
       expect(ticket.data['ticket']).to eq(JSON.parse(response_ticket)['ticket'])
     end
+
+    #if the API is unavailable, raise an error
+    it 'should raise an error on timeout' do
+
+      stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
+        with(headers: Mock.req_headers).to_timeout
+
+      expect { ZendeskApi.get_ticket(1) }.to raise_error(StandardError)
+    end
   end
 
   context 'The get_tickets method' do
@@ -41,6 +50,17 @@ describe 'The ZendeskApi module' do
       expect(tickets.error?).to be(false)
       expect(tickets.data['tickets']).to be_a(Array)
       expect(tickets.data['tickets'].length).to eq(JSON.parse(response_tickets)['tickets'].length)
+    end
+
+    #if the API is unavailable, raise an error
+    it 'should raise an error on timeout' do
+
+      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+        with(headers: Mock.req_headers).to_timeout
+
+      expect {
+        ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+      }.to raise_error(StandardError)
     end
   end
 end

@@ -8,7 +8,12 @@ class TicketsController < ApplicationController
     @current_page = params[:page].to_i || nil
     @per_page = CONFIG['tickets']['per_page']
 
-    response = ZendeskApi.get_tickets(per_page: @per_page, page: (params[:page] || 1), sort_by: :created_at)
+    begin
+      response = ZendeskApi.get_tickets(per_page: @per_page, page: (params[:page] || 1), sort_by: :created_at)
+    rescue
+      flash[:notice] = error_msg
+      return
+    end
 
     if(response.error?)
       flash[:error] = error_msg
@@ -31,7 +36,12 @@ class TicketsController < ApplicationController
   def show
     @ticket = nil
 
-    response = ZendeskApi.get_ticket(params[:id])
+    begin
+      response = ZendeskApi.get_ticket(params[:id])
+    rescue
+      flash[:notice] = error_msg
+      return
+    end
 
     if(response.error?)
       redirect_to(root_url)
