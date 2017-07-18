@@ -2,7 +2,7 @@
 
 ### Setup instructions
 * Make sure you have Ruby >= v2.3.1 installed
-* Clone the repo
+* Clone the repo, then
 `$ cd path/to/repo`
 * Run bundle install
 `$ bundle install`
@@ -15,4 +15,4 @@
 * Point your browser to `localhost:3000`
 
 ### Running the test suite
-Assuming you have setup the secrets file described above, then simply `$ bundle exec rspec`
+Assuming you have set up the secrets file described above, then simply `$ bundle exec rspec`
