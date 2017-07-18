@@ -32,6 +32,24 @@ describe 'The ZendeskApi module' do
 
       expect { ZendeskApi.get_ticket(1) }.to raise_error(StandardError)
     end
+
+    #if the API is available, but returns an error code, the Response
+    #object should handle the error
+    it 'should handle the error if the API does not return code 200' do
+
+      response = {
+        error: 'RecordNotFound',
+        description: 'Not Found'
+      }
+      response = JSON.generate(response)
+
+      stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
+        with(headers: Mock.req_headers).to_return(status: 404, body: response, headers: {})
+
+      ticket = ZendeskApi.get_ticket(1)
+
+      expect(ticket.error?).to be(true)
+    end
   end
 
   context 'The get_tickets method' do
@@ -61,6 +79,23 @@ describe 'The ZendeskApi module' do
       expect {
         ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
       }.to raise_error(StandardError)
+    end
+
+    #if the return code != 200, the Respponse object should handle the error
+    it 'should handle the error if the API does not return code 200' do
+
+      response = {
+        error: 'Internal Server Error',
+        description: 'Something went awry'
+      }
+      response = JSON.generate(response)
+
+      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+        with(headers: Mock.req_headers).to_return(status: 500, body: response, headers: {})
+
+      tickets = ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+
+      expect(tickets.error?).to be(true)
     end
   end
 end
