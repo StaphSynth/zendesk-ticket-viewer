@@ -98,4 +98,27 @@ describe 'The ZendeskApi module' do
       expect(tickets.error?).to be(true)
     end
   end
+
+  #check that when an error occurs, it is actually written to the log file
+  context 'Response class error logging' do
+
+    it 'verifies that log/error.log is being written to' do
+
+      response = {
+        error: 'Internal Server Error',
+        description: 'Something went awry'
+      }
+      response = JSON.generate(response)
+
+      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+        with(headers: Mock.req_headers).to_return(status: 500, body: response, headers: {})
+
+      before_error_size = File.size('log/errors.log')
+      tickets = ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+      after_error_size = File.size('log/errors.log')
+
+      expect(tickets.error?).to be(true)
+      expect(before_error_size).to be < after_error_size
+    end
+  end
 end
