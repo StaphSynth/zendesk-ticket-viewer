@@ -15,7 +15,7 @@ class TicketsController < ApplicationController
       return
     end
 
-    if(response.error?)
+    if response.error?
       flash.now[:error] = error_msg
       return
     end
@@ -25,14 +25,14 @@ class TicketsController < ApplicationController
     @total_pages = (@total_tickets.to_f / @per_page).ceil
 
     #redirect to last page if user attempts to visit a results page that doesn't exist
-    if(params[:page].to_i > @total_pages)
-      redirect_to(root_url + "?page=#{@total_pages}")
+    if params[:page].to_i > @total_pages
+      redirect_to root_url + "?page=#{@total_pages}"
       flash[:notice] = "There #{@total_pages == 1 ? 'is' : 'are'} only #{@total_pages}
                         #{'page'.pluralize(@total_pages)} of results."
       return
     end
 
-    if(@tickets.empty?)
+    if @tickets.empty?
       flash.now[:notice] = 'There are no tickets to display.'
       return
     end
@@ -49,8 +49,8 @@ class TicketsController < ApplicationController
       return
     end
 
-    if(response.error?)
-      redirect_to(root_url)
+    if response.error?
+      redirect_to root_url
       flash[:error] = error_msg
     else
       @ticket = response.data['ticket']
