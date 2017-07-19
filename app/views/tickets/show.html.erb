@@ -1,5 +1,4 @@
 <% if @ticket %>
-
   <% provide :heading, "Ticket ##{@ticket['id']}" %>
   <% provide :title, "Ticket ##{@ticket['id']}" %>
 
@@ -22,19 +21,17 @@
         </div>
       <% end %>
 
-        <div class="ticket-requester" title="Requester">
-          <span><%= fa_icon  'user' %> <a href="#"><%= @ticket['requester_id'] %></a></span>
-        </div>
+      <div class="ticket-requester" title="Requester">
+        <span><%= fa_icon  'user' %> <a href="#"><%= @ticket['requester_id'] %></a></span>
+      </div>
 
     </div>
 
     <div>
 
-      <% if @ticket['subject'] %>
-        <div class="ticket-subject" title="Subject">
-          <h3><%= @ticket['subject'] %></h3>
-        </div>
-      <% end %>
+      <div class="ticket-subject" title="Subject">
+        <h3><%= @ticket['subject'] %></h3>
+      </div>
 
     </div>
 
@@ -53,20 +50,18 @@
       <% end %>
 
       <% if @ticket['tags'] && !@ticket['tags'].empty? %>
-      <div title="Tags">
-        <span><%= fa_icon 'tags' %> <%= @ticket['tags'].join(', ') %></span>
-      </div>
+        <div title="Tags">
+          <span><%= fa_icon 'tags' %> <%= @ticket['tags'].join(', ') %></span>
+        </div>
       <% end %>
 
     </div>
 
     <div>
 
-      <% if @ticket['description'] %>
-        <div class="ticket-description">
-          <%= @ticket['description'] %>
-        </div>
-      <% end %>
+      <div class="ticket-description">
+        <%= @ticket['description'] %>
+      </div>
 
     </div>
   </div>
