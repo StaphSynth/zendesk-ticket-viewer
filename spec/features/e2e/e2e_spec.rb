@@ -4,10 +4,10 @@ RSpec.feature 'End-to-end app test', type: :feature do
 
   #setup environment
   before(:each) do
-    @total_tickets = Site.per_page * 5
-    @last_page = (@total_tickets / Site.per_page.to_f).ceil
-    @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
-    @index_stub = stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    @total_tickets = Viewer.per_page * 5
+    @last_page = (@total_tickets / Viewer.per_page.to_f).ceil
+    @response_tickets = Mock.tickets_response(Viewer.per_page, @total_tickets)
+    @index_stub = stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
     FactoryGirl.reload
   end
@@ -20,7 +20,7 @@ RSpec.feature 'End-to-end app test', type: :feature do
     visit '/'
 
     #verify the index page has tickets to click on
-    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
+    expect(page).to have_selector('.ticket-gist-container', count: Viewer.per_page)
 
     #click on the first ticket gist and verify it redirects and renders
     first('.tickets-list a').click

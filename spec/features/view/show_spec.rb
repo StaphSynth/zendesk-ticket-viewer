@@ -7,9 +7,9 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
 
   #setup environment
   before(:each) do
-    @total_tickets = Site.per_page * 5
+    @total_tickets = Viewer.per_page * 5
     @response_ticket = Mock.ticket_response
-    @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+    @response_tickets = Mock.tickets_response(Viewer.per_page, @total_tickets)
     FactoryGirl.reload
   end
 
@@ -38,15 +38,15 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
       with(headers: Mock.req_headers).to_return(status: 500, body: fail_response, headers: {})
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit '/ticket?id=1'
 
     expect(page).to have_current_path('/')
-    expect(page).to have_text(Site.title)
-    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
-    expect(page).to have_text(Site.error_msg)
+    expect(page).to have_text(Viewer.title)
+    expect(page).to have_selector('.ticket-gist-container', count: Viewer.per_page)
+    expect(page).to have_text(Viewer.error_msg)
   end
 
   #if the API request times out, the controller should display an error message
@@ -57,7 +57,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
 
     visit '/ticket?id=1'
 
-    expect(page).to have_text(Site.error_msg)
+    expect(page).to have_text(Viewer.error_msg)
     expect(page).not_to have_selector('.ticket-container')
   end
 
@@ -75,14 +75,14 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + "tickets/#{non_extant_ticket}.json").
       with(headers: Mock.req_headers).to_return(status: 404, body: fail_response, headers: {})
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit "/ticket?id=#{non_extant_ticket}"
 
     expect(page).to have_current_path('/')
-    expect(page).to have_text(Site.title)
-    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
-    expect(page).to have_text(Site.error_msg)
+    expect(page).to have_text(Viewer.title)
+    expect(page).to have_selector('.ticket-gist-container', count: Viewer.per_page)
+    expect(page).to have_text(Viewer.error_msg)
   end
 end

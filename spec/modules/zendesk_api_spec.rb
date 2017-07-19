@@ -18,7 +18,6 @@ describe 'The ZendeskApi module' do
 
       ticket = ZendeskApi.get_ticket(1)
 
-      expect(ticket).to be_a(ZendeskApi::Response)
       expect(ticket.error?).to be(false)
       expect(ticket.data['ticket']['id']).to eq(1)
       expect(ticket.data['ticket']).to eq(JSON.parse(response_ticket)['ticket'])
@@ -59,12 +58,11 @@ describe 'The ZendeskApi module' do
 
       response_tickets = Mock.tickets_response(10, 10)
 
-      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
         with(headers: Mock.req_headers).to_return(status: 200, body: response_tickets, headers: {})
 
-      tickets = ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+      tickets = ZendeskApi.get_tickets(page: 1, per_page: Viewer.per_page, sort_by: :created_at)
 
-      expect(tickets).to be_a(ZendeskApi::Response)
       expect(tickets.error?).to be(false)
       expect(tickets.data['tickets']).to be_a(Array)
       expect(tickets.data['tickets'].length).to eq(JSON.parse(response_tickets)['tickets'].length)
@@ -73,11 +71,11 @@ describe 'The ZendeskApi module' do
     #if the API is unavailable, raise an error
     it 'should raise an error on timeout' do
 
-      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
         with(headers: Mock.req_headers).to_timeout
 
       expect {
-        ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+        ZendeskApi.get_tickets(page: 1, per_page: Viewer.per_page, sort_by: :created_at)
       }.to raise_error(StandardError)
     end
 
@@ -90,10 +88,10 @@ describe 'The ZendeskApi module' do
       }
       response = JSON.generate(response)
 
-      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
         with(headers: Mock.req_headers).to_return(status: 500, body: response, headers: {})
 
-      tickets = ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+      tickets = ZendeskApi.get_tickets(page: 1, per_page: Viewer.per_page, sort_by: :created_at)
 
       expect(tickets.error?).to be(true)
     end
@@ -110,11 +108,11 @@ describe 'The ZendeskApi module' do
       }
       response = JSON.generate(response)
 
-      stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+      stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
         with(headers: Mock.req_headers).to_return(status: 500, body: response, headers: {})
 
       before_error_size = File.size('log/errors.log')
-      tickets = ZendeskApi.get_tickets(page: 1, per_page: Site.per_page, sort_by: :created_at)
+      tickets = ZendeskApi.get_tickets(page: 1, per_page: Viewer.per_page, sort_by: :created_at)
       after_error_size = File.size('log/errors.log')
 
       expect(tickets.error?).to be(true)

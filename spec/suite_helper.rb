@@ -1,8 +1,9 @@
 #This file contains helper functions and definitions
 #used in the test suite
 
+#defines some constants and functions
+#for mocking external API calls and returns
 module Mock
-
   #headers for the mock_api calls
   def self.req_headers
     {
@@ -41,8 +42,8 @@ module Mock
   end
 end
 
-#constants used by the site
-module Site
+#constants used by the ticket viewer
+module Viewer
   def self.title
     'Zendesk Ticket Viewer'
   end
@@ -53,7 +54,7 @@ module Site
   end
 
   def self.index
-    "tickets.json?page=1&per_page=#{Site.per_page}&sort_by=created_at"
+    "tickets.json?page=1&per_page=#{Viewer.per_page}&sort_by=created_at"
   end
 
   def self.per_page

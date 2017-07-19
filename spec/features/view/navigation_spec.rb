@@ -7,16 +7,16 @@ RSpec.feature 'Navigation links', type: :feature do
 
   #setup environment
   before(:each) do
-    @total_tickets = Site.per_page * 5
-    @last_page = (@total_tickets / Site.per_page.to_f).ceil
-    @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+    @total_tickets = Viewer.per_page * 5
+    @last_page = (@total_tickets / Viewer.per_page.to_f).ceil
+    @response_tickets = Mock.tickets_response(Viewer.per_page, @total_tickets)
 
     #commonly used stubs
-    @index_stub = stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    @index_stub = stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     @last_page_stub = stub_request(:get, Rails.application.secrets.ZD_URL +
-      "tickets.json?page=#{@last_page}&per_page=#{Site.per_page}&sort_by=created_at").
+      "tickets.json?page=#{@last_page}&per_page=#{Viewer.per_page}&sort_by=created_at").
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     FactoryGirl.reload
@@ -37,7 +37,7 @@ RSpec.feature 'Navigation links', type: :feature do
   #at the last page, expect the forward links to be disabled
   scenario 'On displaying the last page, the "forward" buttons are disabled' do
 
-    query = "tickets.json?page=#{@last_page}&per_page=#{Site.per_page}&sort_by=created_at"
+    query = "tickets.json?page=#{@last_page}&per_page=#{Viewer.per_page}&sort_by=created_at"
 
     stub_request(:get, Rails.application.secrets.ZD_URL + query).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
@@ -55,7 +55,7 @@ RSpec.feature 'Navigation links', type: :feature do
   scenario 'On displaying a middle page, the navigation links are enabled and point to the correct URL' do
 
     middle_page = (@last_page / 2).floor
-    query = "tickets.json?page=#{middle_page}&per_page=#{Site.per_page}&sort_by=created_at"
+    query = "tickets.json?page=#{middle_page}&per_page=#{Viewer.per_page}&sort_by=created_at"
 
     stub_request(:get, Rails.application.secrets.ZD_URL + query).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
@@ -79,7 +79,7 @@ RSpec.feature 'Navigation links', type: :feature do
     #click next
     scenario 'clicking the "forward" link takes you to the next page' do
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=2&per_page=#{Site.per_page}&sort_by=created_at").
+    stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=2&per_page=#{Viewer.per_page}&sort_by=created_at").
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit '/'
@@ -100,7 +100,7 @@ RSpec.feature 'Navigation links', type: :feature do
     #click back
     scenario 'clicking the "back" link takes you to the previous page' do
 
-      stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=#{@last_page - 1}&per_page=#{Site.per_page}&sort_by=created_at").
+      stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=#{@last_page - 1}&per_page=#{Viewer.per_page}&sort_by=created_at").
         with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
       visit "/?page=#{@last_page}"

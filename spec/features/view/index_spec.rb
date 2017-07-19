@@ -7,22 +7,22 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
 
   #setup environment
   before(:each) do
-    @total_tickets = Site.per_page * 5
-    @last_page = (@total_tickets / Site.per_page.to_f).ceil
-    @response_tickets = Mock.tickets_response(Site.per_page, @total_tickets)
+    @total_tickets = Viewer.per_page * 5
+    @last_page = (@total_tickets / Viewer.per_page.to_f).ceil
+    @response_tickets = Mock.tickets_response(Viewer.per_page, @total_tickets)
     FactoryGirl.reload
   end
 
   #the happy path: a page full of tickets
   scenario 'View the ticket index page full of tickets' do
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
     visit '/'
 
-    expect(page).to have_text(Site.title)
-    expect(page).to have_selector('.ticket-gist-container', count: Site.per_page)
+    expect(page).to have_text(Viewer.title)
+    expect(page).to have_selector('.ticket-gist-container', count: Viewer.per_page)
   end
 
   #if there are no tickets associated with an account, then it should say so.
@@ -36,12 +36,12 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
     }
     empty_response = JSON.generate(empty_response)
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: empty_response, headers: {})
 
     visit '/'
 
-    expect(page).to have_text(Site.title)
+    expect(page).to have_text(Viewer.title)
     expect(page).not_to have_selector('.ticket-gist-container')
     expect(page).to have_text('There are no tickets to display.')
   end
@@ -55,26 +55,26 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
     }
     fail_response = JSON.generate(fail_response)
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 404, body: fail_response, headers: {})
 
     visit '/'
 
-    expect(page).to have_text(Site.title)
+    expect(page).to have_text(Viewer.title)
     expect(page).not_to have_selector('.ticket-gist-container')
-    expect(page).to have_text(Site.error_msg)
+    expect(page).to have_text(Viewer.error_msg)
   end
 
   #if the API is not available, the controller should flash an error message
   scenario 'View the index page on API request timeout' do
 
-    stub_request(:get, Rails.application.secrets.ZD_URL + Site.index).
+    stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_timeout
 
     visit '/'
 
-    expect(page).to have_text(Site.title)
-    expect(page).to have_text(Site.error_msg)
+    expect(page).to have_text(Viewer.title)
+    expect(page).to have_text(Viewer.error_msg)
     expect(page).not_to have_selector('.ticket-gist-container')
   end
 
@@ -83,8 +83,8 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
   scenario 'Attempt to request a results page that doesn\'t exist' do
 
     non_extant_page = @last_page + 1
-    bad_request = "tickets.json?page=#{non_extant_page}&per_page=#{Site.per_page}&sort_by=created_at"
-    good_request = "tickets.json?page=#{@last_page}&per_page=#{Site.per_page}&sort_by=created_at"
+    bad_request = "tickets.json?page=#{non_extant_page}&per_page=#{Viewer.per_page}&sort_by=created_at"
+    good_request = "tickets.json?page=#{@last_page}&per_page=#{Viewer.per_page}&sort_by=created_at"
 
     initial_response = {
       tickets: [],
@@ -102,7 +102,7 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
 
     visit "/?page=#{non_extant_page}"
 
-    expect(page).to have_text(Site.title)
+    expect(page).to have_text(Viewer.title)
     expect(page).to have_text("There are only #{@last_page} pages of results.")
     expect(page).to have_current_path("/?page=#{@last_page}")
   end
