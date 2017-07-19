@@ -12,8 +12,8 @@ class ZendeskApi
   def self.get_tickets(query_hash = {})
     extension = 'tickets.json'
 
-    unless(query_hash.empty?)
-      extension += '?' + query_hash.map { |key, value| key.to_s + '=' + value.to_s }.join('&')
+    unless query_hash.empty?
+      extension += '?' + query_hash.map { |key, value| "#{key}=#{value}" }.join('&')
       extension = URI.escape(extension)
     end
 
@@ -41,12 +41,14 @@ class ZendeskApi
   # response class handles server errors and returns
   # server response data to the controller
   class Response
+    attr_reader :data
+
     def initialize(server_response)
       @error = nil
       @data = nil
       body = JSON.parse(server_response.body)
 
-      if(server_response.code != 200)
+      if server_response.code != 200
         @error = {
           code: server_response.code,
           errors: body
@@ -57,8 +59,6 @@ class ZendeskApi
       end
     end
 
-    attr_reader :data
-
     def error?
       @error ? true : false
     end
@@ -68,13 +68,8 @@ class ZendeskApi
     def log_error
       error = prettify_error
 
-      #log to console
-      puts error
-
-      #log to file errors.log
-      File.open('log/errors.log', 'a') do |log|
-        log.write error
-      end
+      puts error unless Rails.env.test?
+      File.write('log/errors.log', error, mode: 'a')
     end
 
     def prettify_error
