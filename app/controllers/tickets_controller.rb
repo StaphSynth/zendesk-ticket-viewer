@@ -2,6 +2,7 @@ require 'zendesk_api'
 
 class TicketsController < ApplicationController
 
+  #index action: render ticket index list
   def index
     @tickets = []
     @total_tickets = nil
@@ -11,12 +12,12 @@ class TicketsController < ApplicationController
     begin
       response = ZendeskApi.get_tickets(per_page: @per_page, page: (params[:page] || 1), sort_by: :created_at)
     rescue
-      flash[:notice] = error_msg
+      flash[:error] = error_msg
       return
     end
 
     if(response.error?)
-      flash[:error] = error_msg
+      flash.now[:error] = error_msg
     else
       @tickets = response.data['tickets']
       @total_tickets = response.data['count']
@@ -30,17 +31,18 @@ class TicketsController < ApplicationController
         return
       end
 
-      flash[:notice] = 'There are no tickets to display.' if @tickets.empty?
+      flash.now[:notice] = 'There are no tickets to display.' if @tickets.empty?
     end
   end
 
+  #show action: render individual ticket
   def show
     @ticket = nil
 
     begin
       response = ZendeskApi.get_ticket(params[:id])
     rescue
-      flash[:notice] = error_msg
+      flash[:error] = error_msg
       return
     end
 
