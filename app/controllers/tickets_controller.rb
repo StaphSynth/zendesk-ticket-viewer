@@ -1,7 +1,6 @@
 require 'zendesk_api'
 
 class TicketsController < ApplicationController
-
   #index action: render ticket index list
   def index
     @tickets = []
@@ -18,20 +17,24 @@ class TicketsController < ApplicationController
 
     if(response.error?)
       flash.now[:error] = error_msg
-    else
-      @tickets = response.data['tickets']
-      @total_tickets = response.data['count']
-      @total_pages = (@total_tickets.to_f / @per_page).ceil
+      return
+    end
 
-      #redirect to last page if user attempts to visit a results page that doesn't exist
-      if(params[:page].to_i > @total_pages)
-        redirect_to(root_url + "?page=#{@total_pages}")
-        flash[:notice] = "There #{@total_pages == 1 ? 'is' : 'are'} only #{@total_pages}
-                          #{'page'.pluralize(@total_pages)} of results."
-        return
-      end
+    @tickets = response.data['tickets']
+    @total_tickets = response.data['count']
+    @total_pages = (@total_tickets.to_f / @per_page).ceil
 
-      flash.now[:notice] = 'There are no tickets to display.' if @tickets.empty?
+    #redirect to last page if user attempts to visit a results page that doesn't exist
+    if(params[:page].to_i > @total_pages)
+      redirect_to(root_url + "?page=#{@total_pages}")
+      flash[:notice] = "There #{@total_pages == 1 ? 'is' : 'are'} only #{@total_pages}
+                        #{'page'.pluralize(@total_pages)} of results."
+      return
+    end
+
+    if(@tickets.empty?)
+      flash.now[:notice] = 'There are no tickets to display.'
+      return
     end
   end
 
@@ -55,8 +58,9 @@ class TicketsController < ApplicationController
   end
 
   private
-    def error_msg
-      "Oops! There was an error getting the ticket data, please try again.
-      If this error continues, contact your system administrator."
-    end
+
+  def error_msg
+    'Oops! There was an error getting the ticket data, please try again.
+    If this error continues, contact your system administrator.'
+  end
 end
