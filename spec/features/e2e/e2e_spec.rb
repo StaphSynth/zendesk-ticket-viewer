@@ -1,6 +1,6 @@
 #tests the end-to-end functionality of the site from the user's perspective
 
-RSpec.feature 'End-to-end app test', type: :feature do
+RSpec.feature 'End-to-end app tests', type: :feature do
 
   #setup environment
   before(:each) do

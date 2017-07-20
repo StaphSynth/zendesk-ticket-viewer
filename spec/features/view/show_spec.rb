@@ -14,7 +14,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
   end
 
   #happy path: successful individual ticket view
-  scenario 'View individual ticket details' do
+  scenario 'The show action correctly renders an individual ticket' do
 
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_ticket, headers: {})
@@ -27,7 +27,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
 
   #if the ZD API return code != 200 when trying to view a ticket,
   #the controller should redirect to root and flash an error message
-  scenario 'API returns an error when trying to view ticket' do
+  scenario 'The show action correctly handles an error code returned by the API' do
 
     fail_response = {
       error: "Internal Server Error",
@@ -50,7 +50,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
   end
 
   #if the API request times out, the controller should display an error message
-  scenario 'API times out when trying to view a ticket' do
+  scenario 'The show action handles an API timeout' do
 
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
       with(headers: Mock.req_headers).to_timeout
@@ -63,7 +63,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
 
   #an attempt to view a ticket that doesn't exist should cause
   #a 404 error and force a redirect to the index page
-  scenario 'User attempts to load a ticket that doesn\'t exist' do
+  scenario 'The show action redirects to root and displays error when attempting to view a ticket that doesn\'t exist' do
 
     non_extant_ticket = @total_tickets + 1
     fail_response = {

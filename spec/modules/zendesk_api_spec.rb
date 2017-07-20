@@ -9,7 +9,7 @@ describe 'The ZendeskApi module' do
   context 'The get_ticket method' do
 
     #happy path getting a ticket from the API
-    it '#get_ticket should return a Response object containing a ticket from the API' do
+    it 'should return a Response object containing a ticket from the API' do
 
       response_ticket = Mock.ticket_response
 
@@ -24,7 +24,7 @@ describe 'The ZendeskApi module' do
     end
 
     #if the API is unavailable, raise an error
-    it 'should raise an error on timeout' do
+    it 'should raise an error on API timeout' do
 
       stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
         with(headers: Mock.req_headers).to_timeout
@@ -69,7 +69,7 @@ describe 'The ZendeskApi module' do
     end
 
     #if the API is unavailable, raise an error
-    it 'should raise an error on timeout' do
+    it 'should raise an error on API timeout' do
 
       stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
         with(headers: Mock.req_headers).to_timeout

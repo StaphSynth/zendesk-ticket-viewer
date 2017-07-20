@@ -14,7 +14,7 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
   end
 
   #the happy path: a page full of tickets
-  scenario 'View the ticket index page full of tickets' do
+  scenario "The index action renders a page limit of #{Viewer.per_page} tickets from the API" do
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
@@ -26,7 +26,7 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
   end
 
   #if there are no tickets associated with an account, then it should say so.
-  scenario 'View the page with no tickets returned by the API' do
+  scenario 'The index action displays a message when no tickets are returned by the API' do
 
     empty_response = {
       tickets: [],
@@ -47,7 +47,7 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
   end
 
   #if the ZD API return code != 200, then the controller should flash an error message
-  scenario 'View the page when the API has returned an error' do
+  scenario 'The index action handles an error code returned by the API' do
 
     fail_response = {
       error: 'InvalidEndpoint',
@@ -66,7 +66,7 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
   end
 
   #if the API is not available, the controller should flash an error message
-  scenario 'View the index page on API request timeout' do
+  scenario 'The index action handles an API timeout error' do
 
     stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_timeout
@@ -80,7 +80,7 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
 
   #in an attempt to load a results page that doesn't exist, the controller should redirect to the
   #last available page of results and flash a notice to the user
-  scenario 'Attempt to request a results page that doesn\'t exist' do
+  scenario 'The index action handles an attempt to request a results page that doesn\'t exist' do
 
     non_extant_page = @last_page + 1
     bad_request = "tickets.json?page=#{non_extant_page}&per_page=#{Viewer.per_page}&sort_by=created_at"
