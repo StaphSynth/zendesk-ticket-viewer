@@ -100,11 +100,11 @@ RSpec.feature 'Tickets Controller: Index', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + good_request).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit "/?page=#{non_extant_page}"
+    visit "/tickets?page=#{non_extant_page}"
 
     expect(page).to have_text(Viewer.title)
     expect(page).to have_text("There are only #{@last_page} pages of results.")
-    expect(page).to have_current_path("/?page=#{@last_page}")
+    expect(page).to have_current_path("/tickets?page=#{@last_page}")
   end
 
 end

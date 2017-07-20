@@ -42,7 +42,7 @@ RSpec.feature 'Navigation links', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + query).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit "/?page=#{@last_page}"
+    visit "/tickets?page=#{@last_page}"
 
     expect(page).to have_selector('.navigation', count: 2)
     expect(page).to have_css('a.last.disabled')
@@ -60,17 +60,17 @@ RSpec.feature 'Navigation links', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + query).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit "/?page=#{middle_page}"
+    visit "/tickets?page=#{middle_page}"
 
     expect(page).to have_selector('.navigation', count: 2)
     expect(page).not_to have_css('a.last.disabled')
     expect(page).not_to have_css('a.forward.disabled')
     expect(page).not_to have_css('a.first.disabled')
     expect(page).not_to have_css('a.back.disabled')
-    all('a.forward').each { |a| expect(a['href']).to eq(root_url + "?page=#{middle_page + 1}") }
-    all('a.last').each { |a| expect(a['href']).to eq(root_url + "?page=#{@last_page}") }
-    all('a.first').each { |a| expect(a['href']).to eq(root_url) }
-    all('a.back').each { |a| expect(a['href']).to eq(root_url + "?page=#{middle_page - 1}") }
+    all('a.forward').each { |a| expect(a['href']).to eq("/tickets?page=#{middle_page + 1}") }
+    all('a.last').each { |a| expect(a['href']).to eq("/tickets?page=#{@last_page}") }
+    all('a.first').each { |a| expect(a['href']).to eq('/tickets?page=1') }
+    all('a.back').each { |a| expect(a['href']).to eq("/tickets?page=#{middle_page - 1}") }
   end
 
   #it's not enough just to know the buttons exist. Do they actually work?
@@ -85,7 +85,7 @@ RSpec.feature 'Navigation links', type: :feature do
     visit '/'
     first('a.forward').click
 
-    expect(page).to have_current_path('/?page=2')
+    expect(page).to have_current_path('/tickets?page=2')
     end
 
     #click last
@@ -94,7 +94,7 @@ RSpec.feature 'Navigation links', type: :feature do
       visit '/'
       first('a.last').click
 
-      expect(page).to have_current_path("/?page=#{@last_page}")
+      expect(page).to have_current_path("/tickets?page=#{@last_page}")
     end
 
     #click back
@@ -103,19 +103,19 @@ RSpec.feature 'Navigation links', type: :feature do
       stub_request(:get, Rails.application.secrets.ZD_URL + "tickets.json?page=#{@last_page - 1}&per_page=#{Viewer.per_page}&sort_by=created_at").
         with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-      visit "/?page=#{@last_page}"
+      visit "/tickets?page=#{@last_page}"
       first('a.back').click
 
-      expect(page).to have_current_path("/?page=#{@last_page - 1}")
+      expect(page).to have_current_path("/tickets?page=#{@last_page - 1}")
     end
 
     #click first
     scenario 'clicking the "rewind" link takes you to the first page' do
 
-      visit "/?page=#{@last_page}"
+      visit "/tickets?page=#{@last_page}"
       first('a.first').click
 
-      expect(page).to have_current_path('/')
+      expect(page).to have_current_path('/tickets?page=1')
     end
 
     #click the greyed-out links
@@ -124,16 +124,16 @@ RSpec.feature 'Navigation links', type: :feature do
       #at the root the 'back' links do nothing
       visit '/'
       first('a.first.disabled').click
-      expect(page).to have_current_path('/')
+      expect(page).to have_current_path('/tickets')
       first('a.back.disabled').click
-      expect(page).to have_current_path('/')
+      expect(page).to have_current_path('/tickets')
 
       #on the last page, the 'forward' links do nothing
-      visit "/?page=#{@last_page}"
+      visit "/tickets?page=#{@last_page}"
       first('a.last.disabled').click
-      expect(page).to have_current_path("/?page=#{@last_page}")
+      expect(page).to have_current_path("/tickets?page=#{@last_page}")
       first('a.forward.disabled').click
-      expect(page).to have_current_path("/?page=#{@last_page}")
+      expect(page).to have_current_path("/tickets?page=#{@last_page}")
     end
   end
 end

@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
-  root 'tickets#index'
-  get '/ticket', to: 'tickets#show'
+  root to: redirect('/tickets')
+  resources :tickets, only: [:index, :show]
 end

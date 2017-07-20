@@ -24,7 +24,7 @@ RSpec.feature 'End-to-end app test', type: :feature do
 
     #click on the first ticket gist and verify it redirects and renders
     first('.tickets-list a').click
-    expect(page).to have_current_path('/ticket?id=1')
+    expect(page).to have_current_path('/tickets/1')
     expect(page).to have_selector('.ticket-container', count: 1)
     expect(page).to have_text('Ticket #1')
   end

@@ -19,7 +19,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_ticket, headers: {})
 
-    visit '/ticket?id=1'
+    visit '/tickets/1'
 
     expect(page).to have_text('Ticket #1')
     expect(page).to have_selector('.ticket-container', count: 1)
@@ -41,9 +41,9 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit '/ticket?id=1'
+    visit '/tickets/1'
 
-    expect(page).to have_current_path('/')
+    expect(page).to have_current_path('/tickets')
     expect(page).to have_text(Viewer.title)
     expect(page).to have_selector('.ticket-gist-container', count: Viewer.per_page)
     expect(page).to have_text(Viewer.error_msg)
@@ -55,7 +55,7 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + 'tickets/1.json').
       with(headers: Mock.req_headers).to_timeout
 
-    visit '/ticket?id=1'
+    visit '/tickets/1'
 
     expect(page).to have_text(Viewer.error_msg)
     expect(page).not_to have_selector('.ticket-container')
@@ -78,9 +78,9 @@ RSpec.feature 'Ticket Controller: Show', type: :feature do
     stub_request(:get, Rails.application.secrets.ZD_URL + Viewer.index).
       with(headers: Mock.req_headers).to_return(status: 200, body: @response_tickets, headers: {})
 
-    visit "/ticket?id=#{non_extant_ticket}"
+    visit "/tickets/#{non_extant_ticket}"
 
-    expect(page).to have_current_path('/')
+    expect(page).to have_current_path('/tickets')
     expect(page).to have_text(Viewer.title)
     expect(page).to have_selector('.ticket-gist-container', count: Viewer.per_page)
     expect(page).to have_text(Viewer.error_msg)

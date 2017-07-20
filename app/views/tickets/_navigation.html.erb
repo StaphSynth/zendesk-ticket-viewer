@@ -1,27 +1,27 @@
-<% unless tickets.empty? %>
+<% unless @tickets.empty? %>
   <nav class="navigation">
 
-    <% page_url = root_url + '?page=' %>
+    <% page_path = request.fullpath.split('?')[0] + '?page=' %>
 
     <% first_page = (!@current_page || @current_page <= 1) %>
-    <%= link_to (first_page ? '#' : root_url), class: ['first', ('disabled' if first_page)] do %>
+    <%= link_to (first_page ? '#' : page_path + '1'), class: ['first', ('disabled' if first_page)] do %>
       <%= fa_icon 'fast-backward' %>
     <% end %>
 
     <% prev_page = (@current_page - 1 if @current_page && @current_page > 1) || nil %>
-    <%= link_to (prev_page ? page_url + prev_page.to_s : '#'), class: ['back', ('disabled' unless prev_page)] do %>
+    <%= link_to (prev_page ? page_path + prev_page.to_s : '#'), class: ['back', ('disabled' unless prev_page)] do %>
       <%= fa_icon 'caret-left' %>
     <% end %>
 
-    <span><%= fa_icon 'ticket' %> <%= tickets[0]['id'] %> - <%= tickets[-1]['id'] %></span>
+    <span><%= fa_icon 'ticket' %> <%= @tickets[0]['id'] %> - <%= @tickets[-1]['id'] %></span>
 
     <% next_page = get_next_page(@current_page, @total_pages) %>
-      <%= link_to (next_page ? page_url + next_page.to_s : '#'), class: ['forward', ('disabled' unless next_page)] do %>
+      <%= link_to (next_page ? page_path + next_page.to_s : '#'), class: ['forward', ('disabled' unless next_page)] do %>
         <%= fa_icon 'caret-right' %>
       <% end %>
 
     <% last_page = (@current_page == @total_pages || @total_pages == 1) %>
-    <%= link_to (last_page ? '#' : page_url + @total_pages.to_s), class: ['last', ('disabled' if last_page)] do %>
+    <%= link_to (last_page ? '#' : page_path + @total_pages.to_s), class: ['last', ('disabled' if last_page)] do %>
       <%= fa_icon 'fast-forward' %>
     <% end %>
 

@@ -2,16 +2,16 @@
 <% provide :title, title %>
 <% provide :heading, 'Zendesk Ticket Viewer' %>
 
-<%= render 'navigation', tickets: @tickets, prev_page: @prev_page, next_page: @next_page %>
+<%= render 'navigation' %>
 
 <ul class="tickets-list">
   <% @tickets.each do |ticket| %>
     <li>
-      <a href="/ticket?id=<%= ticket['id'] %>">
+      <%= link_to ticket_path(ticket['id']) do %>
         <%= render 'ticket_gist', ticket: ticket %>
-      </a>
+      <% end %>
     </li>
   <% end %>
 </ul>
 
-<%= render 'navigation', tickets: @tickets, prev_page: @prev_page, next_page: @next_page %>
+<%= render 'navigation' %>
