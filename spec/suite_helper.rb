@@ -31,6 +31,10 @@ module Mock
   #(obviously, n <= count)
   def self.tickets_response(n, count)
 
+    if n > count
+      raise ArgumentError, 'Number of tickets on page cannot be greater than total ticket count'
+    end
+
     response_data = Hash.new.tap do |hash|
       hash[:count] = count
       hash[:tickets] = FactoryGirl.build_list(:ticket, n)
