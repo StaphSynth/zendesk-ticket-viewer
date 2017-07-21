@@ -1,17 +1,17 @@
 #This file contains helper functions and definitions
 #used in the test suite
 
-#defines some constants and functions
+#defines static req header and functions
 #for mocking external API calls and returns
 module Mock
   #headers for the mock_api calls
   def self.req_headers
     {
-      'Accept'=>'*/*',
-      'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-      'Authorization'=>"Basic #{Base64.strict_encode64(Rails.application.secrets.ZD_USERNAME +
+      'Accept' => '*/*',
+      'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+      'Authorization' => "Basic #{Base64.strict_encode64(Rails.application.secrets.ZD_USERNAME +
       ':' + Rails.application.secrets.ZD_PASSWORD)}",
-      'User-Agent'=>'Ruby'
+      'User-Agent' => 'Ruby'
     }
   end
 
@@ -42,7 +42,7 @@ module Mock
   end
 end
 
-#constants used by the ticket viewer
+#static text/path/config used by the ticket viewer
 module Viewer
   def self.title
     'Zendesk Ticket Viewer'
