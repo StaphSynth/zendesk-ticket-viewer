@@ -53,7 +53,7 @@ class TicketStub extends React.Component {
   render() {
     return (
       <li className="ticket">
-        <a href="#">
+        <a href={ '/react_ticket?id=' + this.props.ticket_id }>
           <div className="ticket-gist-container">
 
             <div>
