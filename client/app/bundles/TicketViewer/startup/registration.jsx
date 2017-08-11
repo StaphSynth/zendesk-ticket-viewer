@@ -1,6 +1,6 @@
 import ReactOnRails from 'react-on-rails';
-import TestReact from '../components/TestReact';
+import TicketList from '../components/TicketList';
 
 ReactOnRails.register({
-  TestReact
+  TicketList
 });

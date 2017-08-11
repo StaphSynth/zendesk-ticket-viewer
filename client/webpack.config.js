@@ -21,7 +21,7 @@ const config = {
       'es5-shim/es5-shim',
       'es5-shim/es5-sham',
       'babel-polyfill',
-      './app/bundles/TestReact/startup/registration'
+      './app/bundles/TicketViewer/startup/registration'
     ],
   },
 
