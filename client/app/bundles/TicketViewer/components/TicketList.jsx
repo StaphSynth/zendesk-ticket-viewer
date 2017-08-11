@@ -8,10 +8,10 @@ export default class TicketList extends React.Component {
     super(props);
 
     this.state = { ticketList: null }
-    this.fetchTickets('/tickets');
+    this.getTickets('/tickets');
   }
 
-  fetchTickets(path) {
+  getTickets(path) {
     Ajax.req(path, tickets => {
       this.setState(state => (
         { ticketList: tickets }
