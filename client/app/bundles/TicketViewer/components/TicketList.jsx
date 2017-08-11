@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Ajax from '../AjaxWrapper';
+import Spinner from './Spinner';
 
 export default class TicketList extends React.Component {
 
@@ -88,14 +89,6 @@ class TicketStub extends React.Component {
           </div>
         </a>
       </li>
-    );
-  }
-}
-
-class Spinner extends React.Component {
-  render() {
-    return (
-      <div className="spinner"></div>
     );
   }
 }
