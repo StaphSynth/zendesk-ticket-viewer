@@ -1,6 +1,8 @@
 require 'zendesk_api'
 
 class TicketsController < ApplicationController
+  respond_to :json
+
   #index action: render ticket index list
   def index
     @tickets = []
@@ -36,6 +38,8 @@ class TicketsController < ApplicationController
       flash.now[:notice] = 'There are no tickets to display.'
       return
     end
+
+    respond_with(@tickets)
   end
 
   #show action: render individual ticket
@@ -55,6 +59,8 @@ class TicketsController < ApplicationController
     else
       @ticket = response.data['ticket']
     end
+
+    respond_with(@ticket)
   end
 
   private
