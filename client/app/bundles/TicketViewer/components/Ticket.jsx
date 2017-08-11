@@ -87,14 +87,14 @@ class TicketData extends React.Component {
         {
           this.props.created_at &&
           <div title="Created">
-            <span><i className="fa fa-calendar"></i> { this.props.created_at }</span>
+            <span><i className="fa fa-calendar"></i> { this.props.created_at.split('T')[0] }</span>
           </div>
         }
 
         {
           this.props.updated_at &&
           <div title="Last updated">
-            <span><i className="fa fa-edit"></i> { this.props.updated_at }</span>
+            <span><i className="fa fa-edit"></i> { this.props.updated_at.split('T')[0] }</span>
           </div>
         }
 

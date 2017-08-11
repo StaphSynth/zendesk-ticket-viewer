@@ -82,7 +82,7 @@ class TicketStub extends React.Component {
 
             <div>
               <div>
-                <span><i className="fa fa-calendar</i>"></i> { this.props.created_at }</span>
+                <span><i className="fa fa-calendar"></i> { this.props.created_at.split('T')[0] }</span>
               </div>
             </div>
 
